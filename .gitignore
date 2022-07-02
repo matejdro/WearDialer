@@ -1,0 +1,33 @@
+*.iml
+*.iws
+*.ipr
+.idea/
+.gradle/
+local.properties
+keystore.properties
+out/
+build/
+
+bin/
+.classpath
+.project
+.settings*
+gen/
+
+*/build/
+*.apk
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+mobile/google-services.json
+
+# Ignore build protobuf files
+/common/src/main/java/com/matejdro/wearmusiccenter/proto

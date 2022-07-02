@@ -1,0 +1,37 @@
+[versions]
+androidPluginGradle = "7.0.3"
+androidx-activity = "1.4.0"
+androidx-compose = "1.1.0-beta02"
+androidx-compose-mobile = "1.2.0-rc01"
+androidx-compose-wear = "1.0.0-alpha10"
+androidx-lifecycle = "2.4.1"
+androidx-wear = "1.2.0"
+dagger = "2.38.1"
+kotlin-coroutines = "1.6.2"
+logcat = "0.1"
+kotlin = "1.5.31"
+playServices-wearable = "17.1.0"
+wire = "3.7.0"
+
+[libraries]
+androidPluginGradle = { module = "com.android.tools.build:gradle", version.ref = "androidPluginGradle" }
+androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx.activity" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx.activity" }
+androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "androidx.compose" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx.compose" }
+androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx.compose" }
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx.compose" }
+androidx-compose-wear-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx.compose.wear" }
+androidx-compose-wear-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidx.compose.wear" }
+androidx-compose-wear-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "androidx.compose.wear" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx.lifecycle" }
+androidx-wear = { module = "androidx.wear:wear", version.ref = "androidx.wear" }
+dagger-hilt-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
+dagger-hilt-runtime = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
+logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
+kotlin-coroutines-playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlin.coroutines" }
+kotlin-pluginGradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+playServices-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServices.wearable" }
+wire-runtime = { module = "com.squareup.wire:wire-runtime", version.ref = "wire" }
+wire-pluginGradle = { module = "com.squareup.wire:wire-gradle-plugin", version.ref = "wire" }
