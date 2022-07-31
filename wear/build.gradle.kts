@@ -39,11 +39,13 @@ android {
 dependencies {
    implementation(project(":common"))
 
+   implementation(libs.androidDateTimeFormatters)
    implementation(libs.androidx.activity.compose)
    implementation(libs.androidx.compose.compiler)
    implementation(libs.androidx.compose.wear.foundation)
    implementation(libs.androidx.compose.wear.material)
    implementation(libs.androidx.compose.wear.navigation)
+   debugImplementation(libs.androidx.compose.ui.tooling)
    implementation(libs.androidx.wear)
    implementation(libs.dagger.hilt.runtime)
    implementation(libs.kotlin.coroutines.playServices)

@@ -1,9 +1,10 @@
 [versions]
+androidDateTimeFormatters = "2.2.0"
 androidPluginGradle = "7.0.3"
 androidx-activity = "1.4.0"
 androidx-compose = "1.1.0-beta02"
 androidx-compose-mobile = "1.2.0-rc01"
-androidx-compose-wear = "1.0.0-alpha10"
+androidx-compose-wear = "1.0.0"
 androidx-lifecycle = "2.4.1"
 androidx-wear = "1.2.0"
 dagger = "2.38.1"
@@ -14,11 +15,13 @@ playServices-wearable = "17.1.0"
 wire = "3.7.0"
 
 [libraries]
+androidDateTimeFormatters = { module = "dev.drewhamilton.androidtime:datetimeformatters", version.ref = "androidDateTimeFormatters" }
 androidPluginGradle = { module = "com.android.tools.build:gradle", version.ref = "androidPluginGradle" }
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx.activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx.activity" }
 androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "androidx.compose" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx.compose" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx.compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx.compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx.compose" }
 androidx-compose-wear-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx.compose.wear" }
