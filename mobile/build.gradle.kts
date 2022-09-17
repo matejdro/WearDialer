@@ -33,6 +33,7 @@ android {
 
 dependencies {
    implementation(project(":common"))
+   implementation(project(":wearutils"))
 
    implementation(libs.androidx.activity)
    implementation(libs.androidx.activity.compose)
