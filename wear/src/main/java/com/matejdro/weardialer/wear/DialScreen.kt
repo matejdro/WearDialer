@@ -48,12 +48,12 @@ import java.time.ZonedDateTime
 import java.time.format.FormatStyle
 
 @Composable
-fun DialScreen(entries: List<CallEntry>) {
+fun DialScreen(entries: List<CallEntry>, triggerFilterButton: (String) -> Unit) {
    val focusRequester = remember { FocusRequester() }
 
    Box() {
       BackgroundList(entries, focusRequester)
-      ForegroundDialer()
+      ForegroundDialer(triggerFilterButton)
    }
 
    LaunchedEffect(Unit) {
@@ -62,28 +62,28 @@ fun DialScreen(entries: List<CallEntry>) {
 }
 
 @Composable
-private fun ForegroundDialer() {
+private fun ForegroundDialer(triggerFilterButton: (String) -> Unit) {
    Column(
       Modifier
          .fillMaxSize()
          .padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
    ) {
       ButtonRow {
-         DialButton("1") {}
-         DialButton("2") {}
-         DialButton("3") {}
+         DialButton("1") { triggerFilterButton(".,!1 ") }
+         DialButton("2") { triggerFilterButton("abcč2") }
+         DialButton("3") { triggerFilterButton("def3") }
       }
 
       ButtonRow {
-         DialButton("4") {}
-         DialButton("5") {}
-         DialButton("6") {}
+         DialButton("4") { triggerFilterButton("ghi4") }
+         DialButton("5") { triggerFilterButton("jkl5") }
+         DialButton("6") { triggerFilterButton("mno6") }
       }
 
       ButtonRow {
-         DialButton("7") {}
-         DialButton("8") {}
-         DialButton("9") {}
+         DialButton("7") { triggerFilterButton("pqrsš7") }
+         DialButton("8") { triggerFilterButton("tuv8") }
+         DialButton("9") { triggerFilterButton("xyzž9") }
       }
 
       ButtonRow {
@@ -222,7 +222,7 @@ private fun DialScreenPreview() {
          ),
       )
 
-      DialScreen(testEntries)
+      DialScreen(testEntries) {}
    }
 
 }

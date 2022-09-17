@@ -3,11 +3,15 @@ package com.matejdro.weardialer.wear
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import com.matejdro.weardialer.wear.theme.WearAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+   private val viewModel by viewModels<CallViewModel>()
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)
 
@@ -52,7 +56,7 @@ class MainActivity : ComponentActivity() {
                ),
             )
 
-            DialScreen(testEntries)
+            DialScreen(testEntries, viewModel::filter)
          }
       }
    }

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "com.matejdro.weardialer.model";
+
+message Contacts {
+  repeated Contact contacts = 1;
+}
+
+message Contact {
+  string name = 1;
+  uint64 lastCallTimestamp = 2;
+  repeated Number numbers = 3;
+}
+
+message Number {
+  string type = 1;
+  string number = 2;
+}
