@@ -38,6 +38,7 @@ android {
 
 dependencies {
    implementation(project(":common"))
+   implementation(project(":wearutils"))
 
    implementation(libs.androidDateTimeFormatters)
    implementation(libs.androidx.activity.compose)
