@@ -162,10 +162,10 @@ private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusReques
                .background(highlightColor)
                .padding(top = 16.dp)
          ) {
-            val zonedDate = ZonedDateTime.ofInstant(entry.lastCallTime, ZoneId.systemDefault())
+            val zonedDate = entry.lastCallTime?.let { ZonedDateTime.ofInstant(it, ZoneId.systemDefault()) }
 
             Text(entry.name)
-            Text(AndroidDateTimeFormatter.ofLocalizedDateTime(context, FormatStyle.SHORT).format(zonedDate))
+            Text(zonedDate?.let { AndroidDateTimeFormatter.ofLocalizedDateTime(context, FormatStyle.SHORT).format(it) }.orEmpty())
             Spacer(
                Modifier
                   .padding(top = 16.dp)
@@ -227,4 +227,4 @@ private fun DialScreenPreview() {
 
 }
 
-data class CallEntry(val name: String, val lastCallTime: Instant)
+data class CallEntry(val name: String, val lastCallTime: Instant?)

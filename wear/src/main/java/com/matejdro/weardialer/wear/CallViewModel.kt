@@ -26,7 +26,7 @@ class CallViewModel @Inject constructor(
             list.map { dtoContact ->
                CallEntry(
                   dtoContact.name,
-                  Instant.ofEpochMilli(dtoContact.lastCallTimestamp)
+                  dtoContact.lastCallTimestamp?.let { Instant.ofEpochMilli(it) }
                )
             }
          }
