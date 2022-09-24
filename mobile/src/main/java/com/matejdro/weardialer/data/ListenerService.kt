@@ -25,7 +25,7 @@ class ListenerService : WearableListenerService() {
 
       messageClient = Wearable.getMessageClient(this)
       nodeClient = Wearable.getNodeClient(this)
-      contactFilterer = ContactFilterer(this)
+      contactFilterer = ContactFilterer(this, scope)
    }
 
    override fun onMessageReceived(event: MessageEvent) {
