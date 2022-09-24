@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
          WearAppTheme {
             val entries = viewModel.displayedContacts.collectAsState(emptyList()).value
 
-            DialScreen(entries, viewModel::filter)
+            DialScreen(entries, viewModel::filter, viewModel::backspace)
          }
       }
    }

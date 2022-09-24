@@ -48,12 +48,12 @@ import java.time.ZonedDateTime
 import java.time.format.FormatStyle
 
 @Composable
-fun DialScreen(entries: List<CallEntry>, triggerFilterButton: (String) -> Unit) {
+fun DialScreen(entries: List<CallEntry>, triggerFilterButton: (String) -> Unit, backspace: () -> Unit) {
    val focusRequester = remember { FocusRequester() }
 
-   Box() {
+   Box {
       BackgroundList(entries, focusRequester)
-      ForegroundDialer(triggerFilterButton)
+      ForegroundDialer(triggerFilterButton, backspace)
    }
 
    LaunchedEffect(Unit) {
@@ -62,7 +62,7 @@ fun DialScreen(entries: List<CallEntry>, triggerFilterButton: (String) -> Unit) 
 }
 
 @Composable
-private fun ForegroundDialer(triggerFilterButton: (String) -> Unit) {
+private fun ForegroundDialer(triggerFilterButton: (String) -> Unit, backspace: () -> Unit) {
    Column(
       Modifier
          .fillMaxSize()
@@ -87,7 +87,7 @@ private fun ForegroundDialer(triggerFilterButton: (String) -> Unit) {
       }
 
       ButtonRow {
-         DialButton("<-") {}
+         DialButton("<-", backspace)
          DialButton("OK") {}
       }
    }
@@ -222,7 +222,7 @@ private fun DialScreenPreview() {
          ),
       )
 
-      DialScreen(testEntries) {}
+      DialScreen(testEntries, {}) {}
    }
 
 }

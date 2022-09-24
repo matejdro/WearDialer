@@ -17,9 +17,7 @@ class CallViewModel @Inject constructor(
    private var filterLetters = emptyList<String>()
 
    init {
-      viewModelScope.launch {
-         watchTransmitter.requestContacts(emptyList())
-      }
+      updateWatch()
    }
 
    val displayedContacts: Flow<List<CallEntry>>
@@ -35,9 +33,17 @@ class CallViewModel @Inject constructor(
       }
 
    fun filter(letters: String) {
-      viewModelScope.launch {
-         filterLetters = filterLetters + letters
+      filterLetters = filterLetters + letters
+      updateWatch()
+   }
 
+   fun backspace() {
+      filterLetters = filterLetters.dropLast(1)
+      updateWatch()
+   }
+
+   private fun updateWatch() {
+      viewModelScope.launch {
          watchTransmitter.requestContacts(filterLetters)
       }
    }
