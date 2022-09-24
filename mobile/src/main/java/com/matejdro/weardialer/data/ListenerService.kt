@@ -6,26 +6,26 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import com.matejdro.weardialer.common.CommPaths
-import com.matejdro.weardialer.model.Contact
 import com.matejdro.weardialer.model.ContactRequest
 import com.matejdro.weardialer.model.Contacts
 import com.matejdro.wearutils.messages.sendMessageToNearestClient
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class ListenerService : WearableListenerService() {
    private val scope = MainScope()
 
    private lateinit var messageClient: MessageClient
    private lateinit var nodeClient: NodeClient
+   private lateinit var contactFilterer: ContactFilterer
 
    override fun onCreate() {
       super.onCreate()
 
       messageClient = Wearable.getMessageClient(this)
       nodeClient = Wearable.getNodeClient(this)
+      contactFilterer = ContactFilterer(this)
    }
 
    override fun onMessageReceived(event: MessageEvent) {
@@ -38,15 +38,9 @@ class ListenerService : WearableListenerService() {
    }
 
    private fun onContactRequestReceived(request: ContactRequest) {
-      val fakeContacts = Contacts(List(Random.nextInt(2, 4)) {
-         Contact(
-            name = "Contact ${Random.nextInt(20)}",
-            lastCallTimestamp = System.currentTimeMillis() - Random.nextInt(3600 * 24 * 31), numbers = emptyList()
-         )
-      })
-
       scope.launch {
-         messageClient.sendMessageToNearestClient(nodeClient, CommPaths.MESSAGE_CONTACT_DATA, fakeContacts.encode())
+         val contacts = contactFilterer.getContacts(request.filterLetters)
+         messageClient.sendMessageToNearestClient(nodeClient, CommPaths.MESSAGE_CONTACT_DATA, Contacts(contacts).encode())
       }
    }
 

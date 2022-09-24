@@ -7,6 +7,7 @@ message Contacts {
 }
 
 message Contact {
+  int64 id = 4;
   string name = 1;
   uint64 lastCallTimestamp = 2;
   repeated Number numbers = 3;

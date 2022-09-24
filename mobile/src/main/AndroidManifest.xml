@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.matejdro.weardialer">
 
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:name="com.matejdro.weardialer.MobileApplication"
         android:allowBackup="false"
