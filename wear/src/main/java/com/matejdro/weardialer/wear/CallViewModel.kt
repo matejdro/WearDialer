@@ -14,6 +14,14 @@ import javax.inject.Inject
 class CallViewModel @Inject constructor(
    private val watchTransmitter: WatchTransmitter
 ) : ViewModel() {
+   private var filterLetters = emptyList<String>()
+
+   init {
+      viewModelScope.launch {
+         watchTransmitter.requestContacts(emptyList())
+      }
+   }
+
    val displayedContacts: Flow<List<CallEntry>>
       get() {
          return watchTransmitter.getContactsFlow().map { list ->
@@ -25,8 +33,6 @@ class CallViewModel @Inject constructor(
             }
          }
       }
-
-   private var filterLetters = emptyList<String>()
 
    fun filter(letters: String) {
       viewModelScope.launch {
