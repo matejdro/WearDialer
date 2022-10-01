@@ -31,7 +31,9 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
@@ -48,16 +50,32 @@ import java.time.ZonedDateTime
 import java.time.format.FormatStyle
 
 @Composable
-fun DialScreen(entries: List<CallEntry>, triggerFilterButton: (String) -> Unit, backspace: () -> Unit) {
-   val focusRequester = remember { FocusRequester() }
+fun DialScreen(
+   entries: List<CallEntry>,
+   numbersPopup: List<CallEntryNumber>? = null,
+   triggerFilterButton: (String) -> Unit,
+   backspace: () -> Unit,
+   activateContact: (CallEntry) -> Unit,
+   activateNumber: (CallEntryNumber) -> Unit
+) {
+   val bottomListFocusRequester = remember { FocusRequester() }
+   val topListFocusRequester = remember { FocusRequester() }
 
    Box {
-      BackgroundList(entries, focusRequester)
+      BackgroundList(entries, bottomListFocusRequester, activateContact)
       ForegroundDialer(triggerFilterButton, backspace)
    }
 
-   LaunchedEffect(Unit) {
-      focusRequester.requestFocus()
+   if (numbersPopup != null) {
+      NumbersList(numbersPopup, topListFocusRequester, activateNumber)
+   }
+
+   LaunchedEffect(numbersPopup) {
+      if (numbersPopup == null) {
+         bottomListFocusRequester.requestFocus()
+      } else {
+         topListFocusRequester.requestFocus()
+      }
    }
 }
 
@@ -121,7 +139,7 @@ private fun RowScope.DialButton(text: String, onClick: () -> Unit) {
 @Suppress("OPT_IN_IS_NOT_ENABLED")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusRequester) {
+private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusRequester, activateContact: (CallEntry) -> Unit) {
    var selection by remember { mutableStateOf(0) }
 
    val context = LocalContext.current
@@ -136,13 +154,24 @@ private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusReques
             selection = if (it.verticalScrollPixels > 0) {
                (selection + 1).coerceAtMost(entries.size - 1)
             } else {
-               (selection - 1).coerceAtLeast(0)
-            }
+               (selection - 1)
+            }.coerceAtLeast(0)
 
             scope.launch {
-               state.animateScrollToItem(selection)
+               state.animateScrollToItem(selection, -state.layoutInfo.viewportSize.height / 3)
             }
             true
+         }
+         .onKeyEvent {
+            if (it.nativeKeyEvent.action == android.view.KeyEvent.ACTION_DOWN &&
+               it.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_BACK
+            ) {
+               val targetContact = entries.elementAtOrNull(selection) ?: return@onKeyEvent true
+               activateContact(targetContact)
+               true
+            } else {
+               false
+            }
          }
          .focusRequester(focusRequester)
          .focusable()
@@ -160,7 +189,8 @@ private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusReques
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                .background(highlightColor)
-               .padding(top = 16.dp)
+               .padding(top = 8.dp)
+               .onFocusChanged { println("Key focus changed $it $entry") }
          ) {
             val zonedDate = entry.lastCallTime?.let { ZonedDateTime.ofInstant(it, ZoneId.systemDefault()) }
 
@@ -168,13 +198,80 @@ private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusReques
             Text(zonedDate?.let { AndroidDateTimeFormatter.ofLocalizedDateTime(context, FormatStyle.SHORT).format(it) }.orEmpty())
             Spacer(
                Modifier
-                  .padding(top = 16.dp)
+                  .padding(top = 8.dp)
                   .fillMaxWidth()
                   .height(1.dp)
                   .background(Color.White)
             )
          }
+      }
+   }
+}
 
+@Suppress("OPT_IN_IS_NOT_ENABLED")
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun NumbersList(entries: List<CallEntryNumber>, focusRequester: FocusRequester, activateNumber: (CallEntryNumber) -> Unit) {
+   var selection by remember { mutableStateOf(0) }
+
+   val state = rememberLazyListState()
+   val scope = rememberCoroutineScope()
+
+   LazyColumn(state = state,
+      modifier = Modifier
+         .padding(32.dp)
+         .background(Color.DarkGray)
+         .onRotaryScrollEvent {
+            selection = if (it.verticalScrollPixels > 0) {
+               (selection + 1).coerceAtMost(entries.size - 1)
+            } else {
+               (selection - 1)
+            }.coerceAtLeast(0)
+
+            scope.launch {
+               state.animateScrollToItem(selection, -state.layoutInfo.viewportSize.height / 3)
+            }
+            true
+         }
+         .onKeyEvent {
+            if (it.nativeKeyEvent.action == android.view.KeyEvent.ACTION_DOWN &&
+               it.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_BACK
+            ) {
+               val targetNumber = entries.elementAtOrNull(selection) ?: return@onKeyEvent true
+               activateNumber(targetNumber)
+               true
+            } else {
+               false
+            }
+         }
+         .focusRequester(focusRequester)
+         .focusable()
+   ) {
+      items(entries.size) { index ->
+         val entry = entries.elementAt(index)
+
+         val highlightColor = if (index == selection) {
+            Color(0x30FF8000)
+         } else {
+            Color.Transparent
+         }
+
+         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+               .background(highlightColor)
+               .padding(top = 8.dp)
+         ) {
+            Text(entry.number)
+            Text(entry.label)
+            Spacer(
+               Modifier
+                  .padding(top = 8.dp)
+                  .fillMaxWidth()
+                  .height(1.dp)
+                  .background(Color.White)
+            )
+         }
       }
    }
 }
@@ -185,36 +282,42 @@ private fun DialScreenPreview() {
    PreviewTheme {
       val testEntries = listOf(
          CallEntry(
+            0,
             "Mom",
             ZonedDateTime.of(
                2022, 7, 31, 19, 30, 0, 0, ZoneId.systemDefault()
             ).toInstant()
          ),
          CallEntry(
+            1,
             "Friend",
             ZonedDateTime.of(
                2022, 7, 31, 17, 45, 0, 0, ZoneId.systemDefault()
             ).toInstant()
          ),
          CallEntry(
+            2,
             "John Smith",
             ZonedDateTime.of(
                2022, 7, 20, 19, 30, 0, 0, ZoneId.systemDefault()
             ).toInstant()
          ),
          CallEntry(
+            3,
             "Omolara Johannes",
             ZonedDateTime.of(
                2022, 6, 15, 19, 30, 0, 0, ZoneId.systemDefault()
             ).toInstant()
          ),
          CallEntry(
+            4,
             "Joos Ruut",
             ZonedDateTime.of(
                2022, 6, 5, 17, 45, 0, 0, ZoneId.systemDefault()
             ).toInstant()
          ),
          CallEntry(
+            5,
             "Satu Meera",
             ZonedDateTime.of(
                2022, 5, 20, 19, 30, 0, 0, ZoneId.systemDefault()
@@ -222,9 +325,41 @@ private fun DialScreenPreview() {
          ),
       )
 
-      DialScreen(testEntries, {}) {}
+      DialScreen(testEntries, null, {}, {}, {}) {}
    }
 
 }
 
-data class CallEntry(val name: String, val lastCallTime: Instant?)
+@Composable
+@Preview(device = "id:wearos_large_round", uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_WATCH)
+private fun NumberPickerPreview() {
+   PreviewTheme {
+      val testEntries = listOf(
+         CallEntry(
+            0,
+            "Mom",
+            ZonedDateTime.of(
+               2022, 7, 31, 19, 30, 0, 0, ZoneId.systemDefault()
+            ).toInstant()
+         ),
+         CallEntry(
+            1,
+            "Friend",
+            ZonedDateTime.of(
+               2022, 7, 31, 17, 45, 0, 0, ZoneId.systemDefault()
+            ).toInstant()
+         )
+      )
+
+      val testNumbers = listOf(
+         CallEntryNumber("123 456 789", "Home"),
+         CallEntryNumber("987 654 321", "Work"),
+      )
+
+      DialScreen(testEntries, testNumbers, {}, {}, {}) {}
+   }
+
+}
+
+data class CallEntry(val id: Long, val name: String, val lastCallTime: Instant?)
+data class CallEntryNumber(val number: String, val label: String)
