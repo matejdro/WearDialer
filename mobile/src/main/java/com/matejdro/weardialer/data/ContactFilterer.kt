@@ -62,7 +62,8 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
       val projection = arrayOf(
          ContactsContract.CommonDataKinds.Phone.NUMBER,
          ContactsContract.CommonDataKinds.Phone.IS_PRIMARY,
-         ContactsContract.CommonDataKinds.Phone.TYPE
+         ContactsContract.CommonDataKinds.Phone.TYPE,
+         ContactsContract.CommonDataKinds.Phone.LABEL
       )
 
       val uri = ContactsContract.Data.CONTENT_URI
@@ -74,9 +75,18 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
             while (cursor.moveToNext()) {
                val number = cursor.getString(0)
                val isPrimary = cursor.getInt(1) != 0
-               val type = cursor.getString(2)
+               val typeKey = cursor.getInt(2)
+               val customTypeLabel = cursor.getString(3).orEmpty()
 
-               numbers += (com.matejdro.weardialer.model.Number(type, number) to isPrimary)
+               val typeText = when (typeKey) {
+                  ContactsContract.CommonDataKinds.Phone.TYPE_HOME -> "Home"
+                  ContactsContract.CommonDataKinds.Phone.TYPE_WORK -> "Work"
+                  ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE -> "Mobile"
+                  ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE -> "Work Mobile"
+                  else -> customTypeLabel
+               }
+
+               numbers += (com.matejdro.weardialer.model.Number(typeText, number) to isPrimary)
             }
 
             numbers.sortedByDescending { it.second }.map { it.first }
