@@ -5,6 +5,7 @@ import android.net.Uri
 import android.provider.CallLog
 import android.provider.ContactsContract
 import com.matejdro.weardialer.model.Contact
+import com.matejdro.weardialer.model.Number
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -147,9 +148,9 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
       return if (contact != null) {
          val (contactId, displayName) = contact
 
-         Contact(contactId, displayName)
+         Contact(contactId, displayName, numbers = listOf(Number(number = number)))
       } else {
-         Contact(0, number)
+         Contact(0, number, numbers = listOf(Number(number = number)))
       }
    }
 
