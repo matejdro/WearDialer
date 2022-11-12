@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+option java_package = "com.matejdro.weardialer.model";
+
+message Call {
+  string number = 1;
+}

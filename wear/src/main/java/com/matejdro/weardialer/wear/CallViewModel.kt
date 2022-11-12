@@ -28,6 +28,10 @@ class CallViewModel @Inject constructor(
    val phoneNumberSelection: StateFlow<List<CallEntryNumber>?>
       get() = _phoneNumberSelection
 
+   private val _finishActivity = MutableStateFlow<Boolean>(false)
+   val finishActivity: StateFlow<Boolean>
+      get() = _finishActivity
+
    val displayedContacts: Flow<List<CallEntry>>
       get() {
          return watchTransmitter.getContactsFlow().map { list ->
@@ -53,10 +57,17 @@ class CallViewModel @Inject constructor(
       updateWatch()
    }
 
+   fun call(number: String) {
+      viewModelScope.launch {
+         watchTransmitter.callNumber(number)
+         _finishActivity.value = true
+      }
+   }
+
    fun activateContact(contact: CallEntry) {
       val dtoContact = rawContacts.find { it.id == contact.id } ?: return
       if (dtoContact.numbers.size == 1) {
-         // TODO: directly call
+         call(dtoContact.numbers.first().number)
       } else {
          _phoneNumberSelection.value = dtoContact.numbers.map { CallEntryNumber(it.number, it.type) } +
                  listOf(CallEntryNumber(SPECIAL_NUMBER_BACK, ""))
@@ -66,9 +77,9 @@ class CallViewModel @Inject constructor(
    fun activateNumber(number: CallEntryNumber) {
       if (number.number == SPECIAL_NUMBER_BACK) {
          _phoneNumberSelection.value = null
+      } else {
+         call(number.number)
       }
-
-      //TODO call
    }
 
    private fun updateWatch() {

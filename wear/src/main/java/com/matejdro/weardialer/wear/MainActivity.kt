@@ -5,8 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.lifecycleScope
 import com.matejdro.weardialer.wear.theme.WearAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,6 +22,14 @@ class MainActivity : ComponentActivity() {
             val numbers = viewModel.phoneNumberSelection.collectAsState().value
 
             DialScreen(entries, numbers, viewModel::filter, viewModel::backspace, viewModel::activateContact, viewModel::activateNumber)
+         }
+      }
+
+      lifecycleScope.launch {
+         viewModel.finishActivity.collect {
+            if (it) {
+               finish()
+            }
          }
       }
    }
