@@ -113,6 +113,10 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
 
             while (cursor.moveToNext()) {
                val number = cursor.getString(0)
+               if (number.isBlank()) {
+                  continue
+               }
+
                val date = cursor.getLong(1)
                val contact = lookupNumber(number).copy(lastCallTimestamp = date)
 
@@ -125,6 +129,7 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
    }
 
    private suspend fun lookupNumber(number: String): Contact {
+      println("lookupNumber $number")
       val resolver = context.contentResolver
 
       val projection = arrayOf(ContactsContract.PhoneLookup.CONTACT_ID, ContactsContract.PhoneLookup.DISPLAY_NAME)
