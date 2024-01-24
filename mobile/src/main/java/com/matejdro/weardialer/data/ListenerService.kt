@@ -1,5 +1,6 @@
 package com.matejdro.weardialer.data
 
+import android.R.id
 import android.content.Intent
 import android.net.Uri
 import com.google.android.gms.wearable.MessageClient
@@ -36,9 +37,11 @@ class ListenerService : WearableListenerService() {
             CommPaths.MESSAGE_REQUEST_CONTACTS -> {
                 onContactRequestReceived(ContactRequest.ADAPTER.decode(event.data))
             }
+
             CommPaths.MESSAGE_CALL -> {
                 onCallReceived(Call.ADAPTER.decode(event.data))
             }
+
             else -> {}
         }
     }
@@ -55,13 +58,35 @@ class ListenerService : WearableListenerService() {
     }
 
     private fun onCallReceived(call: Call) {
-        val intent = Intent(
-            Intent.ACTION_CALL,
-            Uri.parse("tel:" + Uri.encode(call.number))
-        ).also {
-            it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        scope.launch {
+            val contact = contactFilterer.lookupNumber(call.number)
+            val whatsappId = contact.id.takeIf { it != 0L }?.let {
+                contactFilterer.getWhatsappNumber(it, call.number)
+            }
+
+            if (whatsappId != null) {
+                val intent = Intent()
+                intent.setAction(Intent.ACTION_VIEW)
+
+                intent.setDataAndType(
+                    Uri.parse("content://com.android.contacts/data/${whatsappId}"),
+                    "vnd.android.cursor.item/vnd.com.whatsapp.voip.call"
+                )
+                intent.setPackage("com.whatsapp")
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                startActivity(intent)
+            } else {
+                val intent = Intent(
+                    Intent.ACTION_CALL,
+                    Uri.parse("tel:" + Uri.encode(call.number))
+                ).also {
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                startActivity(intent)
+            }
         }
-        startActivity(intent)
+
     }
 
     override fun onDestroy() {

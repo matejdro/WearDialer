@@ -128,7 +128,7 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
       }
    }
 
-   private suspend fun lookupNumber(number: String): Contact {
+   suspend fun lookupNumber(number: String): Contact {
       println("lookupNumber $number")
       val resolver = context.contentResolver
 
@@ -159,6 +159,41 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
       }
    }
 
+   suspend fun getWhatsappNumber(contactId: Long, phoneNumber: String): Long? {
+      val resolver = context.contentResolver
+
+      val projection = arrayOf(ContactsContract.Data._ID, ContactsContract.Data.DATA1)
+
+      val processedPhoneNumber = NO_NUMBER_REGEX.replace(phoneNumber,"").let {
+         if (it.startsWith("0")) {
+            "386" + it.drop(1)
+         } else {
+            it
+         }
+      }
+
+      val uri = ContactsContract.Data.CONTENT_URI
+      val selection = "${ContactsContract.Data.CONTACT_ID} = ? AND ${ContactsContract.Data.MIMETYPE} = \"vnd.android.cursor.item/vnd.com.whatsapp.voip.call\""
+      val selectionArgs = arrayOf(contactId.toString())
+
+      return withContext(Dispatchers.IO) {
+         var resultId: Long? = null
+
+         resolver.query(uri, projection, selection, selectionArgs, null)?.use { cursor ->
+            while (cursor.moveToNext()) {
+               val id = cursor.getLong(0)
+               val targetNumber = cursor.getString(1).removeSuffix("@s.whatsapp.net")
+               if (processedPhoneNumber == targetNumber) {
+                  resultId = id
+                  break
+               }
+            }
+         }
+
+         resultId
+      }
+   }
+
    private fun buildSelection(filters: List<String>): String {
       if (filters.isEmpty()) {
          return "1"
@@ -173,3 +208,5 @@ class ContactFilterer(private val context: Context, scope: CoroutineScope) {
 
    private data class CallLogEntry(val number: String, val date: Long, val contact: Contact)
 }
+
+private val NO_NUMBER_REGEX = Regex("[^0-9]")
