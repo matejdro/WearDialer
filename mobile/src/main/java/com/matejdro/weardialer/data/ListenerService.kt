@@ -22,6 +22,7 @@ class ListenerService : WearableListenerService() {
 
     private lateinit var messageClient: MessageClient
     private lateinit var nodeClient: NodeClient
+    private lateinit var whatsappRecentCallsStore: WhatsappRecentCallsStore
     private lateinit var contactFilterer: ContactFilterer
 
     override fun onCreate() {
@@ -29,7 +30,8 @@ class ListenerService : WearableListenerService() {
 
         messageClient = Wearable.getMessageClient(this)
         nodeClient = Wearable.getNodeClient(this)
-        contactFilterer = ContactFilterer(this, scope)
+        whatsappRecentCallsStore = WhatsappRecentCallsStore(this)
+        contactFilterer = ContactFilterer(this, whatsappRecentCallsStore, scope)
     }
 
     override fun onMessageReceived(event: MessageEvent) {
@@ -68,6 +70,14 @@ class ListenerService : WearableListenerService() {
                 val intent = Intent()
                 intent.setAction(Intent.ACTION_VIEW)
 
+                whatsappRecentCallsStore.insert(
+                    WhatsappRecentCallEntry(
+                        null,
+                        call.number,
+                        System.currentTimeMillis(),
+                        contact.id
+                    )
+                )
                 intent.setDataAndType(
                     Uri.parse("content://com.android.contacts/data/${whatsappId}"),
                     "vnd.android.cursor.item/vnd.com.whatsapp.voip.call"

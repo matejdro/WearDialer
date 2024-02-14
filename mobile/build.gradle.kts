@@ -42,10 +42,13 @@ dependencies {
    implementation(libs.androidx.compose.foundation)
    implementation(libs.androidx.compose.material)
    implementation(libs.androidx.compose.ui)
+   implementation(libs.androidx.room.runtime)
+   implementation(libs.androidx.room.ktx)
    implementation(libs.dagger.hilt.runtime)
    implementation(libs.kotlin.coroutines.playServices)
    implementation(libs.logcat)
    implementation(libs.playServices.wearable)
 
+   kapt(libs.androidx.room.compiler)
    kapt(libs.dagger.hilt.compiler)
 }
