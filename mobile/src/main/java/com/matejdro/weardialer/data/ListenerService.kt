@@ -50,12 +50,15 @@ class ListenerService : WearableListenerService() {
 
     private fun onContactRequestReceived(request: ContactRequest) {
         scope.launch {
+            println("contact request received")
             val contacts = contactFilterer.getContacts(request.filterLetters)
+            println("got contacts")
             messageClient.sendMessageToNearestClient(
                 nodeClient,
                 CommPaths.MESSAGE_CONTACT_DATA,
                 Contacts(contacts).encode()
             )
+            println("message sent")
         }
     }
 

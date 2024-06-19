@@ -3,6 +3,7 @@ plugins {
    id("dagger.hilt.android.plugin")
    kotlin("android")
    kotlin("kapt")
+   alias(libs.plugins.composeCompiler)
 }
 
 android {
@@ -25,10 +26,6 @@ android {
    compileOptions {
       sourceCompatibility(JavaVersion.VERSION_17)
       targetCompatibility(JavaVersion.VERSION_17)
-   }
-
-   composeOptions {
-      kotlinCompilerExtensionVersion = libs.versions.androidx.compose.compiler.get()
    }
 
    buildTypes {
