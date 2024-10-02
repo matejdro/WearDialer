@@ -26,9 +26,12 @@ class ContactFilterer(
         suspend { loadCallLog() }.asFlow().shareIn(scope, SharingStarted.Eagerly, 1)
 
     suspend fun getContacts(filterLetters: List<String>): List<Contact> {
+        println("getContacts")
         val callLog = this.calLog.first()
+        println("got call log ${callLog.size}")
 
         if (filterLetters.isEmpty()) {
+            println("filterLetters is empty, return only call log")
             return callLog.map { it.contact }
         }
 
@@ -41,15 +44,19 @@ class ContactFilterer(
 
         val uri = ContactsContract.Contacts.CONTENT_URI
 
+        println("pre query")
         return withContext(Dispatchers.IO) {
             resolver.query(uri, projection, selection, null, sortOrder)?.use { cursor ->
+                println("query created")
                 val contacts = ArrayList<Contact>()
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(0)
                     val name = cursor.getString(1)
+                    println("found contact $name")
 
                     val numbers = getNumbers(id)
+                    println("got numbers $numbers")
                     val lastContact = callLog.find { it.contact.id == id }
 
                     val contact = Contact(id, name, lastContact?.date, numbers)

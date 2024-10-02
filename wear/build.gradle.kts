@@ -26,13 +26,15 @@ android {
    compileOptions {
       sourceCompatibility(JavaVersion.VERSION_17)
       targetCompatibility(JavaVersion.VERSION_17)
+
+      isCoreLibraryDesugaringEnabled = true
    }
 
    buildTypes {
       debug {
          // Deploy optimized version to speed it up
          isDebuggable = false
-         isMinifyEnabled = true
+//         isMinifyEnabled = true
          proguardFiles.add(getDefaultProguardFile("proguard-android-optimize.txt"))
          proguardFiles.add(file("proguard-rules.pro"))
       }
@@ -53,12 +55,14 @@ dependencies {
    implementation(libs.androidx.compose.wear.foundation)
    implementation(libs.androidx.compose.wear.material)
    implementation(libs.androidx.compose.wear.navigation)
+   implementation(libs.androidx.lifecycle.compose)
    debugImplementation(libs.androidx.compose.ui.tooling)
    implementation(libs.androidx.wear)
    implementation(libs.dagger.hilt.runtime)
    implementation(libs.kotlin.coroutines.playServices)
    implementation(libs.logcat)
    implementation(libs.playServices.wearable)
+   coreLibraryDesugaring(libs.androidx.desugarJdkLibs)
 
    kapt(libs.dagger.hilt.compiler)
 }

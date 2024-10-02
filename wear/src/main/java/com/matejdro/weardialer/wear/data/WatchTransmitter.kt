@@ -8,9 +8,12 @@ import com.matejdro.weardialer.model.Call
 import com.matejdro.weardialer.model.Contact
 import com.matejdro.weardialer.model.ContactRequest
 import com.matejdro.weardialer.model.Contacts
+import com.matejdro.wearutils.companion.CompanionConnection
 import com.matejdro.wearutils.messages.sendMessageToNearestClient
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
@@ -18,6 +21,13 @@ class WatchTransmitter @Inject constructor(
     private val messageClient: MessageClient,
     private val nodeClient: NodeClient,
 ) {
+    lateinit var companionConnection: CompanionConnection
+
+    fun setViewFlow(viewFlow: MutableStateFlow<*>, coroutineScope: CoroutineScope) {
+        companionConnection = CompanionConnection(nodeClient, messageClient, coroutineScope)
+        companionConnection.autoStartFromFlow(viewFlow)
+    }
+
     fun getContactsFlow(): Flow<List<Contact>> {
         return callbackFlow {
             val listener = MessageClient.OnMessageReceivedListener { event ->
@@ -36,10 +46,10 @@ class WatchTransmitter @Inject constructor(
     }
 
     suspend fun requestContacts(filterLetters: List<String>) {
+        println("requestContacts")
         val request = ContactRequest(filterLetters)
 
-        messageClient.sendMessageToNearestClient(
-            nodeClient,
+        companionConnection.sendMessage(
             CommPaths.MESSAGE_REQUEST_CONTACTS,
             request.encode()
         )
@@ -48,8 +58,7 @@ class WatchTransmitter @Inject constructor(
     suspend fun callNumber(number: String) {
         val call = Call(number)
 
-        messageClient.sendMessageToNearestClient(
-            nodeClient,
+        companionConnection.sendMessage(
             CommPaths.MESSAGE_CALL,
             call.encode()
         )

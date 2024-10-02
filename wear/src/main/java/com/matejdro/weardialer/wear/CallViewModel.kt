@@ -20,9 +20,6 @@ class CallViewModel @Inject constructor(
    private var filterLetters = emptyList<String>()
    private var rawContacts: List<Contact> = emptyList()
 
-   init {
-      updateWatch()
-   }
 
    private val _phoneNumberSelection = MutableStateFlow<List<CallEntryNumber>?>(null)
    val phoneNumberSelection: StateFlow<List<CallEntryNumber>?>
@@ -31,6 +28,11 @@ class CallViewModel @Inject constructor(
    private val _finishActivity = MutableStateFlow<Boolean>(false)
    val finishActivity: StateFlow<Boolean>
       get() = _finishActivity
+
+   init {
+      watchTransmitter.setViewFlow(_phoneNumberSelection, viewModelScope)
+      updateWatch()
+   }
 
    val displayedContacts: Flow<List<CallEntry>>
       get() {

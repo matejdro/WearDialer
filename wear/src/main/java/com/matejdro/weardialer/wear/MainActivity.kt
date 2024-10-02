@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.matejdro.weardialer.wear.theme.WearAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,8 +19,10 @@ class MainActivity : ComponentActivity() {
 
       setContent {
          WearAppTheme {
-            val entries = viewModel.displayedContacts.collectAsState(emptyList()).value
-            val numbers = viewModel.phoneNumberSelection.collectAsState().value
+            val entries = viewModel.displayedContacts.collectAsStateWithLifecycle(emptyList()).value
+            val numbers = viewModel.phoneNumberSelection.collectAsStateWithLifecycle().value
+
+            println("entries $entries")
 
             DialScreen(entries, numbers, viewModel::filter, viewModel::backspace, viewModel::activateContact, viewModel::activateNumber)
          }

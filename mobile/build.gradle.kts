@@ -22,6 +22,8 @@ android {
    compileOptions {
       sourceCompatibility(JavaVersion.VERSION_17)
       targetCompatibility(JavaVersion.VERSION_17)
+
+      isCoreLibraryDesugaringEnabled = true
    }
 
    buildFeatures {
@@ -49,6 +51,7 @@ dependencies {
    implementation(libs.kotlin.coroutines.playServices)
    implementation(libs.logcat)
    implementation(libs.playServices.wearable)
+   coreLibraryDesugaring(libs.androidx.desugarJdkLibs)
 
    kapt(libs.androidx.room.compiler)
    kapt(libs.dagger.hilt.compiler)
