@@ -1,6 +1,7 @@
 package com.matejdro.weardialer.wear
 
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -147,6 +148,13 @@ private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusReques
    val state = rememberLazyListState()
    val scope = rememberCoroutineScope()
 
+   BackHandler {
+      val targetContact = entries.elementAtOrNull(selection)
+      if (targetContact != null) {
+         activateContact(targetContact)
+      }
+   }
+
    LazyColumn(state = state,
       modifier = Modifier
          .padding(16.dp)
@@ -161,17 +169,6 @@ private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusReques
                state.animateScrollToItem(selection, -state.layoutInfo.viewportSize.height / 3)
             }
             true
-         }
-         .onKeyEvent {
-            if (it.nativeKeyEvent.action == android.view.KeyEvent.ACTION_DOWN &&
-               it.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_BACK
-            ) {
-               val targetContact = entries.elementAtOrNull(selection) ?: return@onKeyEvent true
-               activateContact(targetContact)
-               true
-            } else {
-               false
-            }
          }
          .focusRequester(focusRequester)
          .focusable()
@@ -217,6 +214,13 @@ private fun NumbersList(entries: List<CallEntryNumber>, focusRequester: FocusReq
    val state = rememberLazyListState()
    val scope = rememberCoroutineScope()
 
+   BackHandler {
+      val targetNumber = entries.elementAtOrNull(selection)
+      if (targetNumber != null) {
+         activateNumber(targetNumber)
+      }
+   }
+
    LazyColumn(state = state,
       modifier = Modifier
          .padding(32.dp)
@@ -232,17 +236,6 @@ private fun NumbersList(entries: List<CallEntryNumber>, focusRequester: FocusReq
                state.animateScrollToItem(selection, -state.layoutInfo.viewportSize.height / 3)
             }
             true
-         }
-         .onKeyEvent {
-            if (it.nativeKeyEvent.action == android.view.KeyEvent.ACTION_DOWN &&
-               it.nativeKeyEvent.keyCode == android.view.KeyEvent.KEYCODE_BACK
-            ) {
-               val targetNumber = entries.elementAtOrNull(selection) ?: return@onKeyEvent true
-               activateNumber(targetNumber)
-               true
-            } else {
-               false
-            }
          }
          .focusRequester(focusRequester)
          .focusable()

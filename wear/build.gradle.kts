@@ -34,7 +34,7 @@ android {
       debug {
          // Deploy optimized version to speed it up
          isDebuggable = false
-//         isMinifyEnabled = true
+         isMinifyEnabled = true
          proguardFiles.add(getDefaultProguardFile("proguard-android-optimize.txt"))
          proguardFiles.add(file("proguard-rules.pro"))
       }
