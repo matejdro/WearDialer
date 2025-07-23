@@ -1,22 +1,22 @@
 [versions]
 androidDateTimeFormatters = "2.2.0"
-androidPluginGradle = "8.7.3"
-androidx-activity =  "1.9.3"
-androidx-compose = "1.7.6"
+androidPluginGradle = "8.11.1"
+androidx-activity = "1.10.1"
+androidx-compose = "1.8.3"
 androidx-compose-compiler = "1.5.15"
-androidx-compose-wear = "1.4.0"
-androidx-desugarJdkLibs = "2.1.4"
-androidx-workmanager = "1.3.1"
-androidx-lifecycle = "2.8.7"
-androidx-room = "2.6.1"
+androidx-compose-wear = "1.4.1"
+androidx-desugarJdkLibs = "2.1.5"
+androidx-lifecycle = "2.9.2"
+androidx-room = "2.7.2"
 androidx-wear = "1.3.0"
-dagger = "2.52"
-kotlin-coroutines = "1.9.0"
-logcat = "0.1"
-kotlin = "2.0.0"
+dagger = "2.57"
+kotlin = "2.2.0"
+kotlin-coroutines = "1.10.2"
+logcat = "0.2.3"
 playServices-wearable = "19.0.0"
+versionCatalogUpdate = "0.8.5"
 versionsPlugin-gradle = "0.51.0"
-wire = "4.9.9"
+wire = "5.3.5"
 
 [libraries]
 androidDateTimeFormatters = { module = "dev.drewhamilton.androidtime:datetimeformatters", version.ref = "androidDateTimeFormatters" }
@@ -24,30 +24,31 @@ androidPluginGradle = { module = "com.android.tools.build:gradle", version.ref =
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "androidx-compose-compiler" }
-androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
-androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "androidx-compose" }
 androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "androidx-compose" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "androidx-compose" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "androidx-compose" }
 androidx-compose-wear-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "androidx-compose-wear" }
 androidx-compose-wear-material = { module = "androidx.wear.compose:compose-material", version.ref = "androidx-compose-wear" }
 androidx-compose-wear-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "androidx-compose-wear" }
 androidx-desugarJdkLibs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidx-desugarJdkLibs" }
-androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-wear = { module = "androidx.wear:wear", version.ref = "androidx-wear" }
+dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
 dagger-hilt-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "dagger" }
 dagger-hilt-runtime = { module = "com.google.dagger:hilt-android", version.ref = "dagger" }
-dagger-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "dagger" }
-logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
 kotlin-coroutines-playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlin-coroutines" }
 kotlin-pluginGradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+logcat = { module = "com.squareup.logcat:logcat", version.ref = "logcat" }
 playServices-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServices-wearable" }
 versionsPlugin-gradle = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "versionsPlugin-gradle" }
-wire-runtime = { module = "com.squareup.wire:wire-runtime", version.ref = "wire" }
 wire-pluginGradle = { module = "com.squareup.wire:wire-gradle-plugin", version.ref = "wire" }
+wire-runtime = { module = "com.squareup.wire:wire-runtime", version.ref = "wire" }
 
 [plugins]
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatalogUpdate" }

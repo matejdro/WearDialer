@@ -1,4 +1,10 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+import nl.littlerobots.vcu.plugin.resolver.ModuleVersionCandidate
+import nl.littlerobots.vcu.plugin.versionSelector
+
+plugins {
+   alias(libs.plugins.versionCatalogUpdate)
+}
 
 buildscript {
    repositories {
@@ -16,17 +22,25 @@ buildscript {
 }
 
 
-allprojects {
-   apply(plugin = "com.github.ben-manes.versions")
+versionCatalogUpdate {
+   catalogFile.set(file("libs.toml"))
 
-   afterEvaluate {
-      tasks.withType<DependencyUpdatesTask> {
-         rejectVersionIf {
-            candidate.version.contains("alpha", ignoreCase = true) ||
-                    candidate.version.contains("beta", ignoreCase = true) ||
-                    candidate.version.contains("RC", ignoreCase = true) ||
-                    candidate.version.contains("M", ignoreCase = true)
-         }
-      }
+   fun ModuleVersionCandidate.newlyContains(keyword: String): Boolean {
+      return !currentVersion.contains(keyword, ignoreCase = true) && candidate.version.contains(keyword, ignoreCase = true)
    }
+
+   versionSelector {
+      !it.newlyContains("alpha") &&
+              !it.newlyContains("beta") &&
+              !it.newlyContains("RC") &&
+              !it.newlyContains("M") &&
+              !it.newlyContains("eap") &&
+              !it.newlyContains("dev") &&
+              !it.newlyContains("pre")
+   }
+}
+
+// Always update to the ALL distribution when updating Gradle
+tasks.wrapper {
+   distributionType = Wrapper.DistributionType.ALL
 }

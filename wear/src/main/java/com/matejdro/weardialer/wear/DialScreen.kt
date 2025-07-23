@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -141,7 +142,7 @@ private fun RowScope.DialButton(text: String, onClick: () -> Unit) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusRequester, activateContact: (CallEntry) -> Unit) {
-   var selection by remember { mutableStateOf(0) }
+   var selection by remember { mutableIntStateOf(0) }
 
    val context = LocalContext.current
 
@@ -209,7 +210,7 @@ private fun BackgroundList(entries: List<CallEntry>, focusRequester: FocusReques
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun NumbersList(entries: List<CallEntryNumber>, focusRequester: FocusRequester, activateNumber: (CallEntryNumber) -> Unit) {
-   var selection by remember { mutableStateOf(0) }
+   var selection by remember { mutableIntStateOf(0) }
 
    val state = rememberLazyListState()
    val scope = rememberCoroutineScope()
